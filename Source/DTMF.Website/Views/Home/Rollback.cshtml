@@ -1,0 +1,26 @@
+﻿@using System.Web.UI.WebControls
+@{
+    ViewBag.Title = "Rollback Code";
+}
+
+<h2>Execute Code</h2>
+<div id="monitors"></div>
+
+@section scripts{
+    <script src="~/Scripts/jquery.signalR-2.0.1.min.js"></script>
+    <script src="~/signalr/hubs" type="text/javascript"></script>
+    <script>
+        $(function () {
+            var notificationHub = $.connection.messageHub;
+
+            notificationHub.client.sendMessage = function (content) {
+                $("#monitors").append(content);
+                window.scrollTo(0, document.body.scrollHeight);
+            };
+
+            $.connection.hub.start(function () {
+                $.get("@Url.Content("~/home/runrollback")?AppName=@ViewBag.AppName");
+            });
+        });
+    </script>
+}

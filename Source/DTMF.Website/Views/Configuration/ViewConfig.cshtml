@@ -1,0 +1,126 @@
+﻿@model DTMF.Models.AppInfoExtended
+
+@{
+    ViewBag.Title = "View";
+}
+
+<div>
+    <h3>Application Settings</h3>
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.AppName)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.AppName)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.LastDeployed)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.LastDeployed)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BuildOutputBasePath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BuildOutputBasePath)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BuildOutputRelativeWebPath)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BuildOutputRelativeWebPath)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.BuildOutputBasePathTemp)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.BuildOutputBasePathTemp)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Powershell)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.Powershell)
+        </dd>
+        <h3>Databases</h3>
+
+        @foreach (var database in Model.BuildOutputDatabases)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => database.DatabaseName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => database.DatabaseName)
+            </dd>
+            <dt>
+                @Html.DisplayNameFor(model => database.ServerName)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => database.ServerName)
+            </dd>
+
+            <dt>
+                @Html.DisplayNameFor(model => database.BuildOutputRelativeScriptPath)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => database.BuildOutputRelativeScriptPath)
+            </dd>
+            <hr />
+        }
+
+        <h3>Output Paths</h3>
+
+        @foreach (var path in Model.ProductionPaths)
+        {
+            <dt>
+                @Html.DisplayNameFor(model => path)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => path)
+            </dd>
+        }
+
+
+        @if (!string.IsNullOrEmpty(Model.RobocopyExcludedFolders))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.RobocopyExcludedFolders)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.RobocopyExcludedFolders)
+            </dd>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.RobocopyExcludedFiles))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.RobocopyExcludedFiles)
+            </dt>
+
+            <dd>
+                @Html.DisplayFor(model => model.RobocopyExcludedFiles)
+            </dd>
+        }
+
+
+
+    </dl>
+</div>

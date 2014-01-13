@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<AppInfo xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <AppName>[APP NAME]</AppName>
+  <BuildOutputBasePath>[BUILD PATH]</BuildOutputBasePath>
+  <BuildOutputRelativeWebPath>Latest\web</BuildOutputRelativeWebPath>
+  <BuildOutputDatabases>
+    <DatabaseInfo>
+      <DatabaseName>[DB NAME]</DatabaseName>
+      <ServerName>[DB SERVER]</ServerName>
+      <BuildOutputRelativeScriptPath>Latest\database</BuildOutputRelativeScriptPath>
+    </DatabaseInfo>
+  </BuildOutputDatabases>
+  <ProductionPaths>
+    <string>[OUTPUT PATH]</string>
+  </ProductionPaths>
+  <Powershell />
+  <LastDeployed />
+  <PendingRequest />
+  <RobocopyExcludedFiles />
+  <RobocopyExcludedFolders />
+</AppInfo>

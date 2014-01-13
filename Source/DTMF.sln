@@ -1,0 +1,29 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DTMF.Website", "DTMF.Website\DTMF.Website.csproj", "{15F049BC-8A6E-4720-B688-A8E173BA8E4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{BC9F734D-7C63-4218-9AF8-D23BAF9DB3E2}"
+	ProjectSection(SolutionItems) = preProject
+		.nuget\NuGet.Config = .nuget\NuGet.Config
+		.nuget\NuGet.exe = .nuget\NuGet.exe
+		.nuget\NuGet.targets = .nuget\NuGet.targets
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{15F049BC-8A6E-4720-B688-A8E173BA8E4C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{15F049BC-8A6E-4720-B688-A8E173BA8E4C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{15F049BC-8A6E-4720-B688-A8E173BA8E4C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{15F049BC-8A6E-4720-B688-A8E173BA8E4C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

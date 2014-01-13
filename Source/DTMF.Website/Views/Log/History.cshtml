@@ -1,0 +1,13 @@
+﻿@model List<string>
+
+@{
+    ViewBag.Title = "History";
+}
+
+<h2>History for @ViewBag.AppName</h2>
+
+
+@foreach (var item in Model) {
+    <li>@Html.ActionLink(item, "ViewLog", new {appName = ViewBag.AppName, fileName=item})</li>
+}
+

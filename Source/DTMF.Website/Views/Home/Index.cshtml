@@ -1,0 +1,52 @@
+﻿@model IEnumerable<DTMF.Models.AppInfoExtended>
+@{
+    ViewBag.Title = "DTMF";
+}
+
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-danger">@TempData["Message"].ToString()</div>
+}
+
+<table class="table table-striped">
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.AppName)
+        </th>
+        <th>Actions</th>
+    </tr>
+
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td class="apptitle">
+                @Html.ActionLink(item.AppName, "DetailedApp", "Home", new { item.AppName }, new { @title = "View more information" }) <i class="glyphicon glyphicon-time" title="Last deployed @item.LastDeployed"></i>
+            </td>
+            <td class="appbuttons">
+                @if (item.IsValid)
+                {
+                    <a href="@Url.Action(item.SyncInfo.Action,new { item.AppName })" class="btn + @item.SyncInfo.ClassName" title="@item.SyncInfo.Title"><i class='glyphicon glyphicon-retweet'></i> @item.SyncInfo.Text</a>
+                    <a href="@Url.Action("ViewConfig", "Configuration",new { item.AppName })" class="btn btn-default noconfirm" title="View configuration"><i class='glyphicon glyphicon-cog'></i></a>
+                    <a href="@Url.Action("History", "Log",new { item.AppName })" class="btn btn-default noconfirm" title="View deployment log"><i class='glyphicon glyphicon-calendar'></i></a>
+                }
+                else
+                {
+                    <span>Invalid Configuration: @item.InvalidMessage</span>
+                }
+
+            </td>
+        </tr>
+    }
+
+</table>
+Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.Current.Timestamp).TotalSeconds, 3)
+
+@section scripts{
+    <script>
+        $(document).ready(function () {
+            $('.btn:not(.noconfirm)').click(function () {
+                return confirm(this.title + '?');
+            });
+        });
+    </script>
+}
