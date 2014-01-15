@@ -3,6 +3,7 @@ using DTMF.Logic;
 
 namespace DTMF.Controllers
 {
+    [Authorize]
     public class ConfigurationController : Controller
     {
         private AppLogic appLogic = new AppLogic();

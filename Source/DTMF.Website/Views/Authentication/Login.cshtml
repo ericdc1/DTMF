@@ -7,7 +7,7 @@
     @using (Html.BeginForm("login", "Authentication", null, FormMethod.Post, new { @class = "form-signin", role = "form" }))
     {
         @Html.AntiForgeryToken()
-        @Html.ValidationSummary(true)
+        @Html.ValidationSummary(false)
 
         <h2 class="form-signin-heading">Please sign in</h2>
         @Html.TextBoxFor(model => model.Username, new { @class = "form-control", Placeholder = "Username", required = "required", autofocus = "autofocus" })

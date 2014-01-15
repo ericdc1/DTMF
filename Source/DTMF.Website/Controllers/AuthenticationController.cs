@@ -42,7 +42,7 @@ namespace DTMF.Controllers
                     return RedirectToAction("index", "home");
                 }
             }
-
+            ModelState.AddModelError("Login", "Invalid Login");
             return View("Login", input);
         }
 

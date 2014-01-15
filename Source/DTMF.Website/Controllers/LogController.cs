@@ -4,13 +4,14 @@ using DTMF.Logic;
 
 namespace DTMF.Controllers
 {
+    [Authorize]
     public class LogController : Controller
     {
         private LogLogic logLogic = new LogLogic();
         public ActionResult History(string appName)
         {
             ViewBag.AppName = appName;
-            var apphistorylist = logLogic.GetHistoryList(appName).OrderByDescending(f=>f).ToList();
+            var apphistorylist = logLogic.GetHistoryList(appName).OrderByDescending(f => f).ToList();
             return View(apphistorylist);
         }
 

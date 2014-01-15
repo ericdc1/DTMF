@@ -88,7 +88,10 @@ namespace DTMF.Controllers
             }
 
             Utilities.AppendAndSend(runlog, "");
-            Utilities.AppendAndSend(runlog, "Started at " + DateTime.Now);
+            Utilities.AppendAndSend(runlog, "Started at " + DateTime.Now + " by " + HttpContext.User.Identity.Name);
+
+            if(!string.IsNullOrEmpty(appinfo.PendingRequest))
+                Utilities.AppendAndSend(runlog, appinfo.PendingRequest, Utilities.WrapIn.H4);
 
             //show who we are running as
             Utilities.AppendAndSend(runlog, "Run as: " + syncLogic.ExecuteCode("whoami"), Utilities.WrapIn.H4);
