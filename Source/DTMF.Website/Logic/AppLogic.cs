@@ -60,14 +60,14 @@ namespace DTMF.Logic
             result.PendingRequest = xmlresult.PendingRequest;
             result.Powershell = xmlresult.Powershell;
             result.BuildOutputDatabases = xmlresult.BuildOutputDatabases;
-            result.ProductionPaths = xmlresult.ProductionPaths;
+            result.DestinationPaths = xmlresult.DestinationPaths;
             result.LastDeployed = xmlresult.LastDeployed;
             result.RobocopyExcludedFiles = xmlresult.RobocopyExcludedFiles;
             result.RobocopyExcludedFolders = xmlresult.RobocopyExcludedFolders;
             if (getVersionInfo)
             {
                 result.LatestVersion = Utilities.GetVersion(Path.Combine(result.BuildOutputBasePath, result.BuildOutputRelativeWebPath), result.AppName);
-                result.ProductionVersion = Utilities.GetVersion(result.ProductionPaths[0], result.AppName);
+                result.DestinationVersion = Utilities.GetVersion(result.DestinationPaths[0], result.AppName);
 
                 if (!string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["BackupPath"]))
                     result.BackupVersion = Utilities.GetVersion(Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], result.AppName), result.AppName);

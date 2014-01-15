@@ -48,13 +48,17 @@
             @Html.DisplayFor(model => model.BuildOutputBasePathTemp)
         </dd>
 
-        <dt>
-            @Html.DisplayNameFor(model => model.Powershell)
-        </dt>
+        @if (string.IsNullOrEmpty(Model.Powershell))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Powershell)
+            </dt>
 
-        <dd>
-            @Html.DisplayFor(model => model.Powershell)
-        </dd>
+            <dd>
+                @Html.DisplayFor(model => model.Powershell)
+            </dd>
+        }
+
         <h3>Databases</h3>
 
         @foreach (var database in Model.BuildOutputDatabases)
@@ -86,7 +90,7 @@
 
         <h3>Output Paths</h3>
 
-        @foreach (var path in Model.ProductionPaths)
+        @foreach (var path in Model.DestinationPaths)
         {
             <dt>
                 @Html.DisplayNameFor(model => path)
@@ -108,7 +112,7 @@
                 @Html.DisplayFor(model => model.RobocopyExcludedFolders)
             </dd>
         }
-        
+
         @if (!string.IsNullOrEmpty(Model.RobocopyExcludedFiles))
         {
             <dt>

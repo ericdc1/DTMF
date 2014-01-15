@@ -1,0 +1,28 @@
+﻿@model DTMF.Models.Authentication.LoginModel
+
+@{
+    ViewBag.Title = "Login";
+}
+<div class="container">
+    @using (Html.BeginForm("login", "Authentication", null, FormMethod.Post, new { @class = "form-signin", role = "form" }))
+    {
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+
+        <h2 class="form-signin-heading">Please sign in</h2>
+        @Html.TextBoxFor(model => model.Username, new { @class = "form-control", Placeholder = "Username", required = "required", autofocus = "autofocus" })
+        @Html.ValidationMessageFor(model => model.Username)
+
+        @Html.PasswordFor(model => model.Password, new { @class = "form-control", Placeholder = "Password", required = "required" })
+        @Html.ValidationMessageFor(model => model.Password)
+
+
+        <label class="checkbox">
+            @Html.EditorFor(model => model.RememberMe)
+            @Html.LabelFor(model => model.RememberMe)
+            @Html.ValidationMessageFor(model => model.RememberMe)
+        </label>
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+    }
+</div>
+

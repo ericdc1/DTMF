@@ -11,7 +11,7 @@ namespace DTMF.Models
         public AppInfo()
         {
             BuildOutputDatabases = new List<DatabaseInfo>();
-            ProductionPaths = new List<string>();
+            DestinationPaths = new List<string>();
         }
 
         [DisplayName("Application Name")]
@@ -19,7 +19,7 @@ namespace DTMF.Models
         public string BuildOutputBasePath { get; set; }
         public string BuildOutputRelativeWebPath { get; set; }
         public List<DatabaseInfo> BuildOutputDatabases { get; set; }
-        public List<string> ProductionPaths { get; set; }
+        public List<string> DestinationPaths { get; set; }
         public string Powershell { get; set; }
 
         private string _lastDeployed;

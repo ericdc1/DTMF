@@ -17,7 +17,7 @@
             @Html.DisplayNameFor(model => model.LatestVersion)
         </th>
         <th>
-            @Html.DisplayNameFor(model => model.ProductionVersion)
+            @Html.DisplayNameFor(model => model.DestinationVersion)
         </th>
         <th></th>
     </tr>
@@ -32,7 +32,7 @@
                 <span class="label label-default"> @Html.DisplayFor(modelItem => item.LatestVersion)</span>
             </td>
             <td>
-                <span class="label @(item.LatestVersion == item.ProductionVersion ? "label-success" : "label-danger")"> @Html.DisplayFor(modelItem => item.ProductionVersion)</span>
+                <span class="label @(item.LatestVersion == item.DestinationVersion ? "label-success" : "label-danger")"> @Html.DisplayFor(modelItem => item.DestinationVersion)</span>
             </td>
             <td class="appbuttons">
                 @if (item.IsValid)
@@ -41,7 +41,7 @@
                     <a href="@Url.Action("ViewConfig", "Configuration",new { item.AppName })" class="btn btn-default noconfirm" title="View configuration"><i class='glyphicon glyphicon-cog'></i></a>
                     <a href="@Url.Action("History", "Log",new { item.AppName })" class="btn btn-default noconfirm" title="View deployment log"><i class='glyphicon glyphicon-calendar'></i></a>
 
-                    if (item.BackupVersion !="Unknown" && item.ProductionVersion != item.BackupVersion && Utilities.CanDeploy)
+                    if (item.BackupVersion !="Unknown" && item.DestinationVersion != item.BackupVersion && Utilities.CanDeploy)
                     {
                         <a href="@Url.Action("Rollback",new { item.AppName })" class="btn btn-default" title="Restore @item.AppName to version @item.BackupVersion"><i class='glyphicon glyphicon-backward'></i></a>
                     }

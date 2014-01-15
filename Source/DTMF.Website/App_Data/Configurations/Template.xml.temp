@@ -10,9 +10,9 @@
       <BuildOutputRelativeScriptPath>Latest\database</BuildOutputRelativeScriptPath>
     </DatabaseInfo>
   </BuildOutputDatabases>
-  <ProductionPaths>
+  <DestinationPaths>
     <string>[OUTPUT PATH]</string>
-  </ProductionPaths>
+  </DestinationPaths>
   <Powershell />
   <LastDeployed />
   <PendingRequest />

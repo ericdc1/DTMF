@@ -7,8 +7,8 @@ namespace DTMF.Models
         [DisplayName("Latest")]
         public string LatestVersion { get; set; }
 
-        [DisplayName("Production")]
-        public string ProductionVersion { get; set; }
+        [DisplayName("Destination")]
+        public string DestinationVersion { get; set; }
 
         public string BackupVersion { get; set; }
 
@@ -31,7 +31,7 @@ namespace DTMF.Models
             get
             {
                 var syncinfo = new SyncInfo();
-                var versionsmatch = (LatestVersion == ProductionVersion);
+                var versionsmatch = (LatestVersion == DestinationVersion);
                 if (LatestVersion == null) versionsmatch = false;
                 var candeploy = Utilities.CanDeploy;
                 var pendingrequest = !string.IsNullOrWhiteSpace(PendingRequest);

@@ -12,7 +12,7 @@ using DTMF.Models;
 namespace DTMF.Controllers
 {
 
-    //todo button label stuff
+    [Authorize]
     public class HomeController : Controller
     {
         private AppLogic appLogic = new AppLogic();
@@ -20,13 +20,13 @@ namespace DTMF.Controllers
 
         public ActionResult Index()
         {
-            var appinfolist = new AppLogic().GetAppList().OrderBy(f => string.IsNullOrWhiteSpace(f.PendingRequest)).ThenBy(f => f.LatestVersion == f.ProductionVersion).ThenBy(f => f.AppName);
+            var appinfolist = new AppLogic().GetAppList().OrderBy(f => string.IsNullOrWhiteSpace(f.PendingRequest)).ThenBy(f => f.LatestVersion == f.DestinationVersion).ThenBy(f => f.AppName);
             return View(appinfolist);
         }
 
         public ActionResult Detailed()
         {
-            var appinfolist = new AppLogic().GetAppList(true).OrderBy(f => string.IsNullOrWhiteSpace(f.PendingRequest)).ThenBy(f => f.LatestVersion == f.ProductionVersion).ThenBy(f => f.AppName);
+            var appinfolist = new AppLogic().GetAppList(true).OrderBy(f => string.IsNullOrWhiteSpace(f.PendingRequest)).ThenBy(f => f.LatestVersion == f.DestinationVersion).ThenBy(f => f.AppName);
             return View(appinfolist);
         }
 
@@ -104,12 +104,12 @@ namespace DTMF.Controllers
             Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("Rename-Item '" + appinfo.BuildOutputBasePath + "' '" + appinfo.BuildOutputBasePathTemp + "'"), Utilities.WrapIn.Pre);
 
             //deploy web code to each server
-            foreach (var prodpath in appinfo.ProductionPaths)
+            foreach (var prodpath in appinfo.DestinationPaths)
             {
                 Utilities.AppendAndSend(runlog, "Running on Web Server " + prodpath, Utilities.WrapIn.H3);
 
                 //only backup once since all targets will be the same
-                if (appinfo.ProductionPaths.First() == prodpath && !string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["BackupPath"]))
+                if (appinfo.DestinationPaths.First() == prodpath && !string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["BackupPath"]))
                 {
                     Utilities.AppendAndSend(runlog, "Backup application", Utilities.WrapIn.H4);
                     Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + prodpath + "' '" + Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], appinfo.AppName) + "' /ETA /MIR /NP /W:2 /R:1"), Utilities.WrapIn.Pre);
@@ -221,7 +221,7 @@ namespace DTMF.Controllers
             }
 
             //deploy web code to each server
-            foreach (var prodpath in appinfo.ProductionPaths)
+            foreach (var prodpath in appinfo.DestinationPaths)
             {
                 Utilities.AppendAndSend(runlog, "Running on Web Server " + prodpath, Utilities.WrapIn.H3);
 
