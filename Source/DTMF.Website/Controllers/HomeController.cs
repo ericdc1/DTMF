@@ -115,14 +115,14 @@ namespace DTMF.Controllers
                 if (appinfo.DestinationPaths.First() == prodpath && !string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["BackupPath"]))
                 {
                     Utilities.AppendAndSend(runlog, "Backup application", Utilities.WrapIn.H4);
-                    Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + prodpath + "' '" + Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], appinfo.AppName) + "' /ETA /MIR /NP /W:2 /R:1"), Utilities.WrapIn.Pre);
+                    Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + prodpath + "' '" + Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], appinfo.AppName) + "' /ETA /MIR /NP /W:2 /R:1 /FFT"), Utilities.WrapIn.Pre);
                 }
 
                 Utilities.AppendAndSend(runlog, "Take web app offline", Utilities.WrapIn.H4);
                 Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("copy-item '" + binpath + @"\tools\app_offline.htm' '" + Path.Combine(prodpath, "app_offline.htm") + "'"), Utilities.WrapIn.Pre);
 
                 Utilities.AppendAndSend(runlog, "Copy new application", Utilities.WrapIn.H4);
-                Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "' '" + prodpath + "' /ETA /MIR /NP /W:2 /R:1 /XD " + appinfo.RobocopyExcludedFolders + " /XF app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
+                Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "' '" + prodpath + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
 
 
                 if (System.IO.File.Exists(tranformspath + appinfo.AppName + ".web.config "))
@@ -232,7 +232,7 @@ namespace DTMF.Controllers
                 Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("copy-item " + binpath + @"\tools\app_offline.htm " + Path.Combine(prodpath, "app_offline.htm")), Utilities.WrapIn.Pre);
 
                 Utilities.AppendAndSend(runlog, "Copy new application", Utilities.WrapIn.H4);
-                Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy " + rollbackpath + " " + prodpath + " /ETA /MIR /NP /W:2 /R:1 /XD " + appinfo.RobocopyExcludedFolders + " /XF app_offline.htm web.production.config web.development.config"), Utilities.WrapIn.Pre);
+                Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy " + rollbackpath + " " + prodpath + " /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF app_offline.htm web.production.config web.development.config"), Utilities.WrapIn.Pre);
 
                 Utilities.AppendAndSend(runlog, "Bring app back online", Utilities.WrapIn.H4);
                 Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("remove-item " + Path.Combine(prodpath, "app_offline.htm")), Utilities.WrapIn.Pre);
