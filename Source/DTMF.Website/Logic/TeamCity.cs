@@ -9,6 +9,13 @@ namespace DTMF.Logic
     {
         public static bool IsRunning(StringBuilder sb, string appName)
         {
+            //remove prefix and suffixes from app names so same app can go to multiple places
+            appName = appName.Replace(".Production", "");
+            appName = appName.Replace(".Development", "");
+            appName = appName.Replace(".Staging", "");
+            appName = appName.Replace(".Test", "");
+
+
             //skip if not configured
             if (System.Configuration.ConfigurationManager.AppSettings["TeamCityServer"] == string.Empty) return false;
             //Check for running builds
