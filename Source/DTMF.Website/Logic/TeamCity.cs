@@ -22,7 +22,7 @@ namespace DTMF.Logic
             var client = new TeamCityClient(System.Configuration.ConfigurationManager.AppSettings["TeamCityServer"]);
             client.ConnectAsGuest();
             var builds = client.Builds.ByBuildLocator(BuildLocator.RunningBuilds());
-            if (builds.Any(f=>f.BuildTypeId.Contains(appName)))
+            if (builds.Any(f=>f.BuildTypeId.ToLower().Contains(appName.ToLower())))
             {
                 Utilities.AppendAndSend(sb, "Build in progress. Sync disabled");
                 //foreach (var build in builds)
