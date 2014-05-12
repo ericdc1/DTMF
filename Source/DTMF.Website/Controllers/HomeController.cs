@@ -159,9 +159,9 @@ namespace DTMF.Controllers
                     Utilities.AppendAndSend(runlog, "No transform named " + appinfo.AppName + ".web.config" + " found", Utilities.WrapIn.H4);
                 }
 
-                //copy application except for source web.config file since it was already transformed
+                //copy application except for source/destination web.config file since it was already transformed
                 Utilities.AppendAndSend(runlog, "Copy new application", Utilities.WrapIn.H4);
-                Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "' '" + prodpath + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF " + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.config app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
+                Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "' '" + prodpath + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF " + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.config " + prodpath + "\\web.config app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
 
                 if (!appinfo.FastAppOffine)
                 {
