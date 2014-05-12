@@ -118,53 +118,75 @@ namespace DTMF.Controllers
                     Utilities.AppendAndSend(runlog, "Backup Version: " +appinfo.BackupVersion, Utilities.WrapIn.Pre);
                     Utilities.AppendAndSend(runlog, "Destination Version: " + appinfo.DestinationVersion, Utilities.WrapIn.Pre);
                     Utilities.AppendAndSend(runlog, "Latest Version: " + appinfo.LatestVersion, Utilities.WrapIn.Pre);
-                    //skip backup if current target version was already backed up
-                    if (appinfo.BackupVersion != appinfo.DestinationVersion)
+                    //skip backup if current target version was already backed up and its not a resync
+                    if ((appinfo.BackupVersion != appinfo.DestinationVersion) && (appinfo.LatestVersion != appinfo.DestinationVersion))
                     {
                         Utilities.AppendAndSend(runlog, "Backup application", Utilities.WrapIn.H4);
                         Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + prodpath + "' '" + Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], appinfo.AppName) + "' /ETA /MIR /NP /W:2 /R:1 /FFT"),Utilities.WrapIn.Pre);
                     }
                     else
                     {
-                        Utilities.AppendAndSend(runlog, "Skipped backup - Destination version matches current backup version", Utilities.WrapIn.H4);
+                        Utilities.AppendAndSend(runlog, "Skipped backup", Utilities.WrapIn.H4);
                     }
                 }
 
                 Utilities.AppendAndSend(runlog, "Take web app offline", Utilities.WrapIn.H4);
                 Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("copy-item '" + binpath + @"\tools\app_offline.htm' '" + Path.Combine(prodpath, "app_offline.htm") + "'"), Utilities.WrapIn.Pre);
 
-                //copy bin only in fast mode
+               
                 if (appinfo.FastAppOffine)
                 {
+                    //copy bin only while app is offline
                     Utilities.AppendAndSend(runlog, "Fast Mode: Copy bin only", Utilities.WrapIn.H4);
-                    Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath,"bin") + "' '" + Path.Combine(prodpath,"bin") + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
+                    Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath, "bin") + "' '" + Path.Combine(prodpath, "bin") + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
 
+                    //transform web.config
+                    if (System.IO.File.Exists(tranformspath + appinfo.AppName + ".web.config "))
+                    {
+                        Utilities.AppendAndSend(runlog, "Transform web.config", Utilities.WrapIn.H4);
+                        //usually we want web.config
+                        var webconfigpath = Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.config";
+                        //sometimes we don't check in web.config and have a template file instead
+                        if (!System.IO.File.Exists(webconfigpath))
+                            webconfigpath = Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.template.config";
+                        Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& '" + binpath + @"\tools\webconfigtransformrunner.exe' '" + webconfigpath + "' '" + tranformspath + appinfo.AppName + ".web.config' '" + prodpath + "\\web.config'"), Utilities.WrapIn.Pre);
+                    }
+                    else
+                    {
+                        Utilities.AppendAndSend(runlog, "No transform named " + appinfo.AppName + ".web.config" + " found", Utilities.WrapIn.H4);
+                    }
+
+                    //bring app back online
                     Utilities.AppendAndSend(runlog, "Fast Mode: Bring app back online", Utilities.WrapIn.H4);
                     Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("remove-item '" + Path.Combine(prodpath, "app_offline.htm") + "'"), Utilities.WrapIn.Pre);
-                }
 
-                //transform web.config
-                if (System.IO.File.Exists(tranformspath + appinfo.AppName + ".web.config "))
-                {
-                    Utilities.AppendAndSend(runlog, "Transform web.config", Utilities.WrapIn.H4);
-                    //usually we want web.config
-                    var webconfigpath = Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.config";
-                    //sometimes we don't check in web.config and have a template file instead
-                    if (!System.IO.File.Exists(webconfigpath))
-                        webconfigpath = Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.template.config";
-                    Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& '" + binpath + @"\tools\webconfigtransformrunner.exe' '" + webconfigpath + "' '" + tranformspath + appinfo.AppName + ".web.config' '" + prodpath + "\\web.config'"), Utilities.WrapIn.Pre);
+                    //copy application except for source/destination web.config file since it was already transformed
+                    Utilities.AppendAndSend(runlog, "Copy new application", Utilities.WrapIn.H4);
+                    Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "' '" + prodpath + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF " + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.config " + prodpath + "\\web.config app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
                 }
                 else
                 {
-                    Utilities.AppendAndSend(runlog, "No transform named " + appinfo.AppName + ".web.config" + " found", Utilities.WrapIn.H4);
-                }
+                    //copy entire application
+                    Utilities.AppendAndSend(runlog, "Copy new application", Utilities.WrapIn.H4);
+                    Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "' '" + prodpath + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
 
-                //copy application except for source/destination web.config file since it was already transformed
-                Utilities.AppendAndSend(runlog, "Copy new application", Utilities.WrapIn.H4);
-                Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "' '" + prodpath + "' /ETA /MIR /NP /W:2 /R:1 /FFT /XD " + appinfo.RobocopyExcludedFolders + " /XF " + Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.config " + prodpath + "\\web.config app_offline.htm " + appinfo.RobocopyExcludedFiles), Utilities.WrapIn.Pre);
+                    //transform web.config
+                    if (System.IO.File.Exists(tranformspath + appinfo.AppName + ".web.config "))
+                    {
+                        Utilities.AppendAndSend(runlog, "Transform web.config", Utilities.WrapIn.H4);
+                        //usually we want web.config
+                        var webconfigpath = Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.config";
+                        //sometimes we don't check in web.config and have a template file instead
+                        if (!System.IO.File.Exists(webconfigpath))
+                            webconfigpath = Path.Combine(appinfo.BuildOutputBasePathTemp, appinfo.BuildOutputRelativeWebPath) + "\\web.template.config";
+                        Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& '" + binpath + @"\tools\webconfigtransformrunner.exe' '" + webconfigpath + "' '" + tranformspath + appinfo.AppName + ".web.config' '" + prodpath + "\\web.config'"), Utilities.WrapIn.Pre);
+                    }
+                    else
+                    {
+                        Utilities.AppendAndSend(runlog, "No transform named " + appinfo.AppName + ".web.config" + " found", Utilities.WrapIn.H4);
+                    }
 
-                if (!appinfo.FastAppOffine)
-                {
+                    //bring app back online
                     Utilities.AppendAndSend(runlog, "Bring app back online", Utilities.WrapIn.H4);
                     Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("remove-item '" + Path.Combine(prodpath, "app_offline.htm") + "'"), Utilities.WrapIn.Pre);
                 }
