@@ -27,7 +27,10 @@
         <tr>
             <td class="apptitle">
                 @Html.ActionLink(item.AppName, "DetailedApp", "Home", new { item.AppName }, new { @title = "View more information" }) <i class="glyphicon glyphicon-time" title="Last deployed @item.LastDeployed"></i>
+                @if (item.FastAppOffine)
+                {<i class="glyphicon glyphicon-flash" title="Fast App_Offline enabled" style="font-size:.75em"></i>}
             </td>
+
             <td>
                 <span class="label label-default"> @Html.DisplayFor(modelItem => item.LatestVersion)</span>
             </td>

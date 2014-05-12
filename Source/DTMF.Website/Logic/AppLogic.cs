@@ -64,6 +64,7 @@ namespace DTMF.Logic
             result.LastDeployed = xmlresult.LastDeployed;
             result.RobocopyExcludedFiles = xmlresult.RobocopyExcludedFiles;
             result.RobocopyExcludedFolders = xmlresult.RobocopyExcludedFolders;
+            result.FastAppOffine = xmlresult.FastAppOffine;
             if (getVersionInfo)
             {
                 result.LatestVersion = Utilities.GetVersion(Path.Combine(result.BuildOutputBasePath, result.BuildOutputRelativeWebPath), result.AppName);

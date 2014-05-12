@@ -38,5 +38,9 @@ namespace DTMF.Models
         public string RobocopyExcludedFiles { get; set; }
         public string RobocopyExcludedFolders { get; set; }
 
+        [DisplayName("Fast App Offline")]
+        public bool FastAppOffine { get; set; }
+
+
     }
 }

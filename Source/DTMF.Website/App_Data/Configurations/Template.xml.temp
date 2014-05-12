@@ -18,4 +18,6 @@
   <PendingRequest />
   <RobocopyExcludedFiles />
   <RobocopyExcludedFolders />
+  <!--Takes app offline during bin copy than full duration of file copy-->
+  <FastAppOffine>False</FastAppOffine>
 </AppInfo>

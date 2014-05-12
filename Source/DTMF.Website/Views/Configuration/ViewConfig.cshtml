@@ -48,6 +48,14 @@
             @Html.DisplayFor(model => model.BuildOutputBasePathTemp)
         </dd>
 
+        <dt>
+            @Html.DisplayNameFor(model => model.FastAppOffine)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.FastAppOffine)
+        </dd>
+
         @if (string.IsNullOrEmpty(Model.Powershell))
         {
             <dt>
