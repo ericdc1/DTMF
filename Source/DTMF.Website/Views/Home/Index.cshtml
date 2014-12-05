@@ -13,7 +13,13 @@
         <th>
             @Html.DisplayNameFor(model => model.AppName)
         </th>
-        <th>Actions</th>
+        <th>
+            @Html.DisplayNameFor(model => model.LatestVersion)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DestinationVersion)
+        </th>
+        <th></th>
     </tr>
 
     @foreach (var item in Model)
@@ -24,12 +30,22 @@
                 @if (item.FastAppOffine)
                 {<i class="glyphicon glyphicon-flash" title="Fast App_Offline enabled" style="font-size:.75em"></i>}
             </td>
+            <td>
+                <span class="latest label"><img src="../../Content/moving.gif" alt="" height="10" /></span>
+            </td>
+            <td>
+                <span class="destination label"><img src="../../Content/moving.gif" alt="" height="10" /></span>
+            </td>
             <td class="appbuttons">
                 @if (item.IsValid)
                 {
-                    <a href="@Url.Action(item.SyncInfo.Action,new { item.AppName })" class="btn + @item.SyncInfo.ClassName" title="@item.SyncInfo.Title"><i class='glyphicon glyphicon-retweet'></i> @item.SyncInfo.Text</a>
+                    <a href="@Url.Action(item.SyncInfo.Action,new { item.AppName })" class="sync btn + @item.SyncInfo.ClassName" title="@item.SyncInfo.Title"><i class='glyphicon glyphicon-retweet'></i> @item.SyncInfo.Text</a>
                     <a href="@Url.Action("ViewConfig", "Configuration",new { item.AppName })" class="btn btn-default noconfirm" title="View configuration"><i class='glyphicon glyphicon-cog'></i></a>
                     <a href="@Url.Action("History", "Log",new { item.AppName })" class="btn btn-default noconfirm" title="View deployment log"><i class='glyphicon glyphicon-calendar'></i></a>
+                    if (Utilities.CanDeploy)
+                    {
+                        <a href="@Url.Action("Rollback",new { item.AppName })" class="rollback btn btn-default" style="display:none" title=""><i class='glyphicon glyphicon-backward'></i></a>
+                    }
                 }
                 else
                 {
@@ -45,9 +61,31 @@ Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.C
 
 @section scripts{
     <script>
-        $(document).ready(function () {
-            $('.btn:not(.noconfirm)').click(function () {
+        $(document).ready(function() {
+            $('.btn:not(.noconfirm)').click(function() {
                 return confirm(this.title + '?');
+            });
+
+            $('.apptitle').each(function() {
+                $(this).find('a').each(function() {
+                    var parentrow = $(this).closest('tr');
+                    var appname = this.innerHTML;
+                    $.get("/home/getversioninfo/?appname=" + appname, function(data) {
+                        var adata = data.split("|");
+                        parentrow.find('.latest').html(adata[0]).addClass("label-default");
+                        parentrow.find('.destination').html(adata[1]).addClass("label-success");
+                        if (adata[0] != adata[1]) {
+                            parentrow.find('.destination').removeClass('label-success').addClass('label-danger');
+                        }
+                        if (adata[0] == adata[1]) {
+                            parentrow.find('.sync').removeClass("btn-primary").addClass('btn-default');
+                        }
+                        if (adata[2] != adata[1] && adata[2] != 'invalid') {
+                            parentrow.find('.rollback').toggle().attr('title', 'Restore ' + appname + ' to version ' + adata[2]);
+                        }
+                    });
+
+                });
             });
         });
     </script>

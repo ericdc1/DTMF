@@ -32,18 +32,11 @@ namespace DTMF.Logic
         }
 
         public AppInfo GetAppByName(string appName)
-        {
-            //need a way to clear the cache when changes happen before enabling
-            //if (HttpContext.Current.Cache.Get(appName) != null)
-            //{
-            //    return (AppInfo)HttpContext.Current.Cache.Get(appName);
-            //}
-
+        {       
             var doc = new XmlDocument();
             doc.Load(HttpContext.Current.Server.MapPath(string.Format("~/App_Data/Configurations/{0}.xml", appName)));
             var xmlcontents = doc.InnerXml;
             var result = (AppInfo)Utilities.Deserialize(typeof(AppInfo), xmlcontents);
-            //HttpContext.Current.Cache.Insert(appName, result);
             return result;
         }
 
@@ -65,6 +58,7 @@ namespace DTMF.Logic
             result.RobocopyExcludedFiles = xmlresult.RobocopyExcludedFiles;
             result.RobocopyExcludedFolders = xmlresult.RobocopyExcludedFolders;
             result.FastAppOffine = xmlresult.FastAppOffine;
+            result.HipChatRoomID = xmlresult.HipChatRoomID;
             if (getVersionInfo)
             {
                 result.LatestVersion = Utilities.GetVersion(Path.Combine(result.BuildOutputBasePath, result.BuildOutputRelativeWebPath), result.AppName);

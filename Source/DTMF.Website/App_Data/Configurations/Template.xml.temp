@@ -20,4 +20,6 @@
   <RobocopyExcludedFolders />
   <!--Takes app offline during bin copy than full duration of file copy-->
   <FastAppOffine>False</FastAppOffine>
+  <!--Notify another room aside from the general room-->
+  <HipChatRoomID/>
 </AppInfo>

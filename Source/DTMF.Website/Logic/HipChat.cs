@@ -7,10 +7,17 @@ namespace DTMF.Logic
     {
 
         public static void SendMessage(string appName, string message, string color)
+        {       
+            var room = System.Configuration.ConfigurationManager.AppSettings["HipChatRoomID"];
+            SendMessage(room, appName, message, color);
+        }
+
+
+        public static void SendMessage(string HipChatRoomID, string appName, string message, string color)
         {
             //skip if not configured
             if (System.Configuration.ConfigurationManager.AppSettings["HipChatAuthToken"] == string.Empty) return;
-           
+
             using (var wb = new WebClient())
             {
                 var data = new NameValueCollection();
@@ -18,7 +25,7 @@ namespace DTMF.Logic
                 data["from"] = System.Configuration.ConfigurationManager.AppSettings["HipChatMessageFrom"];
                 data["notify"] = "1";
                 data["color"] = color;
-                var room = System.Configuration.ConfigurationManager.AppSettings["HipChatRoomID"];
+                var room = HipChatRoomID;
                 var authtoken = System.Configuration.ConfigurationManager.AppSettings["HipChatAuthToken"];
                 wb.UploadValues(string.Format("https://api.hipchat.com/v1/rooms/message?auth_token={0}&room_id={1}", authtoken, room), "POST", data);
             }

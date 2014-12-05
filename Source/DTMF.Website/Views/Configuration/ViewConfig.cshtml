@@ -55,6 +55,14 @@
         <dd>
             @Html.DisplayFor(model => model.FastAppOffine)
         </dd>
+        
+        <dt>
+            @Html.DisplayNameFor(model => model.HipChatRoomID)
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.HipChatRoomID)
+        </dd>
 
         @if (string.IsNullOrEmpty(Model.Powershell))
         {
@@ -129,6 +137,17 @@
 
             <dd>
                 @Html.DisplayFor(model => model.RobocopyExcludedFiles)
+            </dd>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.Powershell))
+        {
+            <dt>
+                @Html.DisplayNameFor(model => model.Powershell)
+            </dt>
+
+            <dd>
+                <pre>@Html.DisplayFor(model => model.Powershell)</pre>
             </dd>
         }
 

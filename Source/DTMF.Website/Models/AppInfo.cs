@@ -40,7 +40,6 @@ namespace DTMF.Models
 
         [DisplayName("Fast App Offline")]
         public bool FastAppOffine { get; set; }
-
-
+        public string HipChatRoomID { get; set; }
     }
 }

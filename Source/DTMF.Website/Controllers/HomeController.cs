@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Management.Automation.Language;
 using System.Net;
 using System.Text;
 using System.Web.Configuration;
@@ -221,6 +222,11 @@ namespace DTMF.Controllers
             var message = Utilities.CurrentUser + " deployed " + appName + " version " + appinfo.LatestVersion + " at " + DateTime.Now;
             HipChat.SendMessage(appName, message, "green");
 
+            if (!string.IsNullOrEmpty(appinfo.HipChatRoomID))
+            {
+                HipChat.SendMessage(appinfo.HipChatRoomID, appName, message, "green");  
+            }
+
             //mark last ran time 
             appLogic.SetLastRunTime(appName);
 
@@ -319,5 +325,14 @@ namespace DTMF.Controllers
             return Content("You do not have access to this action!");
         }
 
+        public ActionResult getversioninfo(string appname)
+        {
+            if (!System.IO.File.Exists(Server.MapPath(string.Format("~/App_Data/Configurations/{0}.xml", appname))))
+            {
+                return Content("invalid|invalid|invalid");
+            }
+            var app = appLogic.GetAppExtendedByName(appname, true);
+            return Content(app.LatestVersion + "|" + app.DestinationVersion + "|" + app.BackupVersion);
+        }
     }
 }
