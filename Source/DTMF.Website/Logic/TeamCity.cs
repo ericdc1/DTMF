@@ -20,7 +20,8 @@ namespace DTMF.Logic
             if (System.Configuration.ConfigurationManager.AppSettings["TeamCityServer"] == string.Empty) return false;
             //Check for running builds
             var client = new TeamCityClient(System.Configuration.ConfigurationManager.AppSettings["TeamCityServer"]);
-            client.ConnectAsGuest();
+            //client.ConnectAsGuest();
+            client.Connect(System.Configuration.ConfigurationManager.AppSettings["TeamCityUser"], System.Configuration.ConfigurationManager.AppSettings["TeamCityPass"]);
             var builds = client.Builds.ByBuildLocator(BuildLocator.RunningBuilds());
             if (builds.Any(f=>f.BuildTypeId.ToLower().Contains(appName.ToLower())))
             {
