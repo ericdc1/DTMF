@@ -7,13 +7,13 @@ namespace DTMF.Logic
 {
     public class Slack
     {
-        public static void SendMessage(string appName, string title, string message, string color, string link, string iconUrl = null, string imageUrl = null)
+        public static void SendMessage(string title, string message, string color, string link, string iconUrl = null, string imageUrl = null)
         {       
             var room = System.Configuration.ConfigurationManager.AppSettings["SlackRoomID"];
-            SendMessage(room, appName, title, message, color, link, iconUrl, imageUrl);
+            SendMessage(room, title, message, color, link, iconUrl, imageUrl);
         }
 
-        public static void SendMessage(string slackRoomId, string appName, string title, string message, string color, string link, string iconUrl, string imageUrl)
+        public static void SendMessage(string slackRoomId,string title, string message, string color, string link, string iconUrl, string imageUrl)
         {
             //skip if not configured
             if (System.Configuration.ConfigurationManager.AppSettings["SlackAuthToken"] == string.Empty) 

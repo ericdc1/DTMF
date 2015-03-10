@@ -6,14 +6,14 @@ namespace DTMF.Logic
     public class HipChat
     {
 
-        public static void SendMessage(string appName, string message, string color)
+        public static void SendMessage(string message, string color)
         {       
             var room = System.Configuration.ConfigurationManager.AppSettings["HipChatRoomID"];
-            SendMessage(room, appName, message, color);
+            SendMessage(room, message, color);
         }
 
 
-        public static void SendMessage(string HipChatRoomID, string appName, string message, string color)
+        public static void SendMessage(string HipChatRoomID, string message, string color)
         {
             //skip if not configured
             if (System.Configuration.ConfigurationManager.AppSettings["HipChatAuthToken"] == string.Empty) return;

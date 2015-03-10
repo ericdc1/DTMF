@@ -44,6 +44,8 @@ namespace DTMF.Controllers
         {
             var message = Utilities.CurrentUser + " requested deployment of " + appName + " at " + DateTime.Now;
             HipChat.SendMessage(appName, message, "red");
+            Slack.SendMessage("Requested Sync Of " + appName, message, "#ff0000", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/'), Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png");
+
             Utilities.SendEmailNotification(message);
             appLogic.SetPendingRequest(appName, message);
             return RedirectToAction("index");
@@ -221,10 +223,17 @@ namespace DTMF.Controllers
 
             var message = Utilities.CurrentUser + " deployed " + appName + " version " + appinfo.LatestVersion + " at " + DateTime.Now;
             HipChat.SendMessage(appName, message, "green");
+            Slack.SendMessage("Deployed " + appName, message, "#00ff00", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Log/history?appName=" + appName, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png");
+
 
             if (!string.IsNullOrEmpty(appinfo.HipChatRoomID))
             {
-                HipChat.SendMessage(appinfo.HipChatRoomID, appName, message, "green");  
+                HipChat.SendMessage(appinfo.HipChatRoomID, message, "green");  
+            }
+
+            if (!string.IsNullOrEmpty(appinfo.SlackRoomID))
+            {
+                Slack.SendMessage(appinfo.SlackRoomID, "Deployed " + appName, message, "#00ff00", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Log/history?appName=" + appName, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png");
             }
 
             //mark last ran time 
@@ -299,8 +308,9 @@ namespace DTMF.Controllers
             runlog.AppendLine("Finished at " + DateTime.Now);
 
             var message = Utilities.CurrentUser + " rolled back " + appName + " to version " + appinfo.BackupVersion + " at " + DateTime.Now;
-            HipChat.SendMessage(appName, message, "yellow");
-
+            HipChat.SendMessage(message, "yellow");
+            Slack.SendMessage("Rolled Back " + appName, message, "#ffcc00", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Log/history?appName=" + appName, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png");
+   
             //mark last ran time 
             appLogic.SetLastRunTime(appName);
 

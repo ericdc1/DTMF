@@ -7,7 +7,7 @@
 <div id="monitors"></div>
 
 @section scripts{
-    <script src="~/Scripts/jquery.signalR-2.0.3.min.js"></script>
+    @Scripts.Render("~/bundles/signalr")
     <script src="~/signalr/hubs" type="text/javascript"></script>
     <script>
         $(function () {

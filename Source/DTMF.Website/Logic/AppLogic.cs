@@ -59,6 +59,7 @@ namespace DTMF.Logic
             result.RobocopyExcludedFolders = xmlresult.RobocopyExcludedFolders;
             result.FastAppOffine = xmlresult.FastAppOffine;
             result.HipChatRoomID = xmlresult.HipChatRoomID;
+            result.SlackRoomID = xmlresult.SlackRoomID;
             if (getVersionInfo)
             {
                 result.LatestVersion = Utilities.GetVersion(Path.Combine(result.BuildOutputBasePath, result.BuildOutputRelativeWebPath), result.AppName);
