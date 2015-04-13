@@ -233,7 +233,7 @@ namespace DTMF.Controllers
 
             if (!string.IsNullOrEmpty(appinfo.SlackRoomID))
             {
-                Slack.SendMessage(appinfo.SlackRoomID, "Deployed " + appName, message, "#00ff00", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Log/history?appName=" + appName, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png");
+                Slack.SendMessage(appinfo.SlackRoomID, "Deployed " + appName, message, "#00ff00", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Log/history?appName=" + appName, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png", null);
             }
 
             //mark last ran time 
