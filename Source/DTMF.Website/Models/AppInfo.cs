@@ -39,7 +39,11 @@ namespace DTMF.Models
         public string RobocopyExcludedFolders { get; set; }
 
         [DisplayName("Fast App Offline")]
-        public bool FastAppOffine { get; set; }
+        public bool FastAppOffline { get; set; }
+
+        [DisplayName("TeamCity Build Configuration ID")]
+        public string BuildConfigurationID { get; set; }
+
         public string HipChatRoomID { get; set; }
         public string SlackRoomID { get; set; }
 

@@ -7,14 +7,17 @@ namespace DTMF.Logic
 {
     public class TeamCity
     {
-        public static bool IsRunning(StringBuilder sb, string appName)
+        public static bool IsRunning(StringBuilder sb, string appName, string buildConfigurationID)
         {
-            //remove prefix and suffixes from app names so same app can go to multiple places
-            appName = appName.Replace(".Production", "");
-            appName = appName.Replace(".Development", "");
-            appName = appName.Replace(".Staging", "");
-            appName = appName.Replace(".Test", "");
+            //change app name to march the buildtypeid by replacing . with underscore
+            appName = appName.Replace(".", "_");
 
+            //if a specific build config ID is set use that
+            if (!string.IsNullOrEmpty(buildConfigurationID))
+            {
+                appName = buildConfigurationID;
+            }
+  
 
             //skip if not configured
             if (System.Configuration.ConfigurationManager.AppSettings["TeamCityServer"] == string.Empty) return false;
@@ -25,11 +28,11 @@ namespace DTMF.Logic
             var builds = client.Builds.ByBuildLocator(BuildLocator.RunningBuilds());
             if (builds.Any(f=>f.BuildTypeId.ToLower().Contains(appName.ToLower())))
             {
-                Utilities.AppendAndSend(sb, "Build in progress. Sync disabled");
-                //foreach (var build in builds)
-                //{
-                //    Utilities.AppendAndSend(sb, "<li>" + build.BuildTypeId + " running</li>");
-                //}
+                Utilities.AppendAndSend(sb, "Build in progress. Sync disabled.");
+                foreach (var build in builds)
+                {
+                    Utilities.AppendAndSend(sb, "<li>" + build.BuildTypeId + " running</li>");
+                }
                 return true;
             }
             return false;

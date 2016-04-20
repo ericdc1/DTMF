@@ -57,7 +57,8 @@ namespace DTMF.Logic
             result.LastDeployed = xmlresult.LastDeployed;
             result.RobocopyExcludedFiles = xmlresult.RobocopyExcludedFiles;
             result.RobocopyExcludedFolders = xmlresult.RobocopyExcludedFolders;
-            result.FastAppOffine = xmlresult.FastAppOffine;
+            result.FastAppOffline = xmlresult.FastAppOffline;
+            result.BuildConfigurationID = xmlresult.BuildConfigurationID;
             result.HipChatRoomID = xmlresult.HipChatRoomID;
             result.SlackRoomID = xmlresult.SlackRoomID;
             if (getVersionInfo)

@@ -70,17 +70,16 @@ namespace DTMF.Controllers
         public void RunSync(string appName)
         {
             var runlog = new StringBuilder();
-
+            var appinfo = appLogic.GetAppExtendedByName(appName);
             Utilities.SetRunningStatus(appName);
             //Check for running builds
-            if (TeamCity.IsRunning(runlog, appName))
+            if (TeamCity.IsRunning(runlog, appName, appinfo.BuildConfigurationID))
             {
                 Utilities.SetRunningStatus(string.Empty);
                 return;
             }
 
             //set some variables
-            var appinfo = appLogic.GetAppExtendedByName(appName);
             var binpath = HttpContext.ApplicationInstance.Server.MapPath("~/bin") + @"\";
             var tranformspath = HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/Transforms/") + @"\";
             var baselogpath = HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/Logs/") + @"\";
@@ -137,7 +136,7 @@ namespace DTMF.Controllers
                 Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("copy-item '" + binpath + @"\tools\app_offline.htm' '" + Path.Combine(prodpath, "app_offline.htm") + "'"), Utilities.WrapIn.Pre);
 
                
-                if (appinfo.FastAppOffine)
+                if (appinfo.FastAppOffline)
                 {
                     //copy bin only while app is offline
                     Utilities.AppendAndSend(runlog, "Fast Mode: Copy bin only", Utilities.WrapIn.H4);
