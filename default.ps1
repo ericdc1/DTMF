@@ -4,7 +4,7 @@
 properties {
 	$visualstudioversion = null-coalesce $visualstudioversion "12.0"
 	$projectName = "DTMF"
-    $version = null-coalesce $version ("1.0." + (get-date -format "yyyy")) #changed to three numbers since that's how version comes from teamcity
+    $version = null-coalesce $version ("1.1." + (get-date -format "yyyy")) #changed to three numbers since that's how version comes from teamcity
     $fullversion = $version + "." + (get-date -format "MMdd")  
 
 	$projectConfig = "Release"
