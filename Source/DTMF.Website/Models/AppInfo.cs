@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Web;
 
 namespace DTMF.Models
 {
@@ -46,6 +43,10 @@ namespace DTMF.Models
 
         public string HipChatRoomID { get; set; }
         public string SlackRoomID { get; set; }
+
+        public string GitUrl { get; set; }
+        public string ReleaseBranchName { get; set; }
+        public string RepositoryPathName { get; set; }
 
     }
 }

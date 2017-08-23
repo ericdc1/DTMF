@@ -61,6 +61,9 @@ namespace DTMF.Logic
             result.BuildConfigurationID = xmlresult.BuildConfigurationID;
             result.HipChatRoomID = xmlresult.HipChatRoomID;
             result.SlackRoomID = xmlresult.SlackRoomID;
+            result.GitUrl = xmlresult.GitUrl;
+            result.ReleaseBranchName = xmlresult.ReleaseBranchName;
+            result.RepositoryPathName = xmlresult.RepositoryPathName;
             if (getVersionInfo)
             {
                 result.LatestVersion = Utilities.GetVersion(Path.Combine(result.BuildOutputBasePath, result.BuildOutputRelativeWebPath), result.AppName);
