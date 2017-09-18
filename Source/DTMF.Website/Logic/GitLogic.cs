@@ -20,7 +20,8 @@ namespace DTMF.Logic
         public static void PushToReleaseBranchIfNeeded(
             string gitUrl,
             string releaseBranchName, 
-            string repositoryPath)
+            string repositoryPath,
+            string version)
         {
             if (string.IsNullOrWhiteSpace(GitUsername)) return;
             if (string.IsNullOrWhiteSpace(GitEmail)) return;
@@ -32,7 +33,7 @@ namespace DTMF.Logic
 
             CloneIfNeeded(gitUrl, repositoryPath);
             CheckoutBranchIfNeeded(releaseBranchName, repositoryPath);
-            PullChangesFromMaster(repositoryPath);
+            PullChangesFromMaster(repositoryPath, version);
             PushChanges(repositoryPath);
         }
 
@@ -73,7 +74,7 @@ namespace DTMF.Logic
             }
         }
 
-        private static void PullChangesFromMaster(string path)
+        private static void PullChangesFromMaster(string path, string version)
         {
             var fetchOptions = new FetchOptions
             {
@@ -89,9 +90,20 @@ namespace DTMF.Logic
                     Commands.Fetch(repo, remote.Name, refSpecs, fetchOptions, "");
                 }
 
+                var signature = new Signature(GitUsername, GitEmail, DateTimeOffset.Now);
+
                 repo.Merge(repo.Branches["origin/master"],
-                    new Signature(GitUsername, GitEmail, DateTimeOffset.Now),
-                    new MergeOptions { FastForwardStrategy = FastForwardStrategy.NoFastForward });
+                    signature,
+                    new MergeOptions
+                    {
+                        FastForwardStrategy = FastForwardStrategy.NoFastForward,
+                        CommitOnSuccess = false
+                    });
+
+                if (repo.RetrieveStatus().IsDirty)
+                {
+                    repo.Commit("Deployed version: " + version, signature, signature);
+                }
             }
         }
 
