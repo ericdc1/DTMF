@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Text;
 using LibGit2Sharp;
 
 namespace DTMF.Logic
@@ -18,6 +19,7 @@ namespace DTMF.Logic
         };
 
         public static void PushToReleaseBranchIfNeeded(
+            StringBuilder runlog,
             string gitUrl,
             string releaseBranchName, 
             string repositoryPath,
@@ -31,10 +33,29 @@ namespace DTMF.Logic
             if (string.IsNullOrWhiteSpace(releaseBranchName)) return;
             if (string.IsNullOrWhiteSpace(repositoryPath)) return;
 
-            CloneIfNeeded(gitUrl, repositoryPath);
-            CheckoutBranchIfNeeded(releaseBranchName, repositoryPath);
-            PullChangesFromMaster(repositoryPath, version);
-            PushChanges(repositoryPath);
+            try
+            {
+                Utilities.AppendAndSend(runlog, "Run git merge", Utilities.WrapIn.H3);
+
+                Utilities.AppendAndSend(runlog, "Cloning: " + gitUrl + " to: " + repositoryPath + "...", Utilities.WrapIn.Pre);
+                CloneIfNeeded(gitUrl, repositoryPath);
+
+                Utilities.AppendAndSend(runlog, "Checking out latest..." + repositoryPath, Utilities.WrapIn.Pre);
+                CheckoutBranchIfNeeded(releaseBranchName, repositoryPath);
+
+                Utilities.AppendAndSend(runlog, "Merging master changes to branch..." + repositoryPath, Utilities.WrapIn.Pre);
+                PullChangesFromMaster(repositoryPath, version);
+
+                Utilities.AppendAndSend(runlog, "Pushing master changes to branch..." + repositoryPath, Utilities.WrapIn.Pre);
+                PushChanges(repositoryPath);
+
+                Utilities.AppendAndSend(runlog, "Git merge done." + repositoryPath, Utilities.WrapIn.Pre);
+            }
+            catch (Exception e)
+            {
+                Utilities.AppendAndSend(runlog, "Exception!", Utilities.WrapIn.H3);
+                Utilities.AppendAndSend(runlog, e.ToString(), Utilities.WrapIn.Pre);
+            }
         }
 
         private static void CloneIfNeeded(string cloneUrl, string path)

@@ -241,7 +241,9 @@ namespace DTMF.Controllers
             //log it
             LogLogic.SaveLog(baselogpath, appName, runlog.ToString());
 
-            GitLogic.PushToReleaseBranchIfNeeded(appinfo.GitUrl, 
+            GitLogic.PushToReleaseBranchIfNeeded(
+                runlog,
+                appinfo.GitUrl, 
                 appinfo.ReleaseBranchName,
                 HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/git-repos/" + appinfo.RepositoryPathName),
                 appinfo.LatestVersion);
