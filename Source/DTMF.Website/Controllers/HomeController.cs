@@ -238,15 +238,15 @@ namespace DTMF.Controllers
             //mark last ran time 
             appLogic.SetLastRunTime(appName);
 
-            //log it
-            LogLogic.SaveLog(baselogpath, appName, runlog.ToString());
-
             GitLogic.PushToReleaseBranchIfNeeded(
                 runlog,
                 appinfo.GitUrl, 
                 appinfo.ReleaseBranchName,
                 HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/git-repos/" + appinfo.RepositoryPathName),
                 appinfo.LatestVersion);
+
+            //log it
+            LogLogic.SaveLog(baselogpath, appName, runlog.ToString());
 
             //all done
             Utilities.AppendAndSend(runlog, "Done!", Utilities.WrapIn.H3);
