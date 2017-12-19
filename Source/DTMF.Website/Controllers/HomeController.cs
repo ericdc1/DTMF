@@ -107,6 +107,15 @@ namespace DTMF.Controllers
                 Utilities.SetRunningStatus(string.Empty);
                 return;
             }
+
+            if (Directory.Exists(appinfo.BuildOutputBasePathTemp))
+            {
+                Utilities.AppendAndSend(runlog, "_temp folder already exists. Deleting...");
+                Directory.Delete(appinfo.BuildOutputBasePathTemp);
+                Utilities.AppendAndSend(runlog, "Done.");
+                return;
+            }
+
             Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("Rename-Item '" + appinfo.BuildOutputBasePath + "' '" + appinfo.BuildOutputBasePathTemp + "'"), Utilities.WrapIn.Pre);
 
             //deploy web code to each server

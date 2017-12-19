@@ -109,3 +109,4 @@ UpgradeLog*.XML
 
 build/*
 /Source/.vs/config/applicationhost.config
+Source/.vs/
