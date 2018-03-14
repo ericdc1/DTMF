@@ -90,3 +90,7 @@ Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.C
         });
     </script>
 }
+@if (Utilities.CanDeploy) {
+<br><br>
+<a href="https://deploy.hsc.wvu.edu/Log/History?AppName=RoboLogs">Daily RoboLogs</a>
+}
