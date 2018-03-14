@@ -41,8 +41,11 @@ namespace DTMF.Models.Authentication
                 var enTry = new DirectoryEntry(WebConfigurationManager.AppSettings["ActiveDirectoryPath"], fullusername, pwd, AuthenticationTypes.Secure & AuthenticationTypes.FastBind);
                 var mySearcher = new DirectorySearcher(enTry) { Filter = "(&(objectClass=*)(samAccountName=" + userName + "))" };
                 mySearcher.PropertiesToLoad.Add("samAccountName");
+                mySearcher.PropertiesToLoad.Add("organizationalUnit");
                 var result = mySearcher.FindOne();
-                if ((result == null)) return false;
+
+                if (result == null) return false;
+                if (!result.Path.Contains("OU=" + WebConfigurationManager.AppSettings["ActiveDirectoryOu"])) return false;
 
                 var ldapResult = result.Properties["samAccountName"][0].ToString();
                 HttpContext.Current.Items.Add("ValidateLoginResult", !string.IsNullOrEmpty(ldapResult));
