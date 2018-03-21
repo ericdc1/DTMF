@@ -6,6 +6,8 @@ using System.Linq;
 using System.Management.Automation.Language;
 using System.Net;
 using System.Text;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Configuration;
 using System.Web.Mvc;
 using DTMF.Logic;
@@ -19,6 +21,17 @@ namespace DTMF.Controllers
     {
         private AppLogic appLogic = new AppLogic();
         private SyncLogic syncLogic = new SyncLogic();
+        private bool ShouldSync
+        {
+            get { return TempData.ContainsKey("post-sync") && (bool)TempData["post-sync"]; }
+            set { TempData["post-sync"] = value; }
+        }
+
+        private bool ShouldRollback
+        {
+            get { return TempData.ContainsKey("post-rollback") && (bool) TempData["post-rollback"]; }
+            set { TempData["post-rollback"] = value; } 
+        }
 
         public ActionResult Index()
         {
@@ -52,6 +65,7 @@ namespace DTMF.Controllers
         }
 
         [CanDeploy]
+        [HttpPost]
         public ActionResult Sync(string appName)
         {
             if (!string.IsNullOrEmpty(Utilities.GetRunningStatus()))
@@ -61,12 +75,27 @@ namespace DTMF.Controllers
                 return RedirectToAction("index");
             }
 
+            ShouldSync = true;
+            return RedirectToAction("CurrentSyncLog", new { appName });
+        }
 
+        [HttpGet]
+        public ActionResult CurrentSyncLog(string appName)
+        {
+            ViewBag.RunSync = false;
             ViewBag.AppName = appName;
-            return View();
+
+            if (ShouldSync)
+            {
+                ViewBag.RunSync = true;
+                return View("Sync");
+            }
+            
+            return RedirectToAction("index");
         }
 
         [CanDeploy]
+        [HttpPost]
         public void RunSync(string appName)
         {
             var runlog = new StringBuilder();
@@ -80,9 +109,9 @@ namespace DTMF.Controllers
             }
 
             //set some variables
-            var binpath = HttpContext.ApplicationInstance.Server.MapPath("~/bin") + @"\";
-            var tranformspath = HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/Transforms/") + @"\";
-            var baselogpath = HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/Logs/") + @"\";
+            var binpath = Server.MapPath("~/bin") + @"\";
+            var tranformspath = Server.MapPath("~/App_Data/Transforms/") + @"\";
+            var baselogpath = Server.MapPath("~/App_Data/Logs/") + @"\";
 
             if (!appLogic.IsConfigurationValid(runlog, appinfo))
             {
@@ -91,9 +120,9 @@ namespace DTMF.Controllers
             }
 
             Utilities.AppendAndSend(runlog, "");
-            Utilities.AppendAndSend(runlog, "Started at " + DateTime.Now + " by " + HttpContext.User.Identity.Name);
+            Utilities.AppendAndSend(runlog, "Started at " + DateTime.Now + " by " + System.Web.HttpContext.Current.User.Identity.Name);
 
-            if(!string.IsNullOrEmpty(appinfo.PendingRequest))
+            if (!string.IsNullOrEmpty(appinfo.PendingRequest))
                 Utilities.AppendAndSend(runlog, appinfo.PendingRequest, Utilities.WrapIn.H4);
 
             //show who we are running as
@@ -126,14 +155,14 @@ namespace DTMF.Controllers
                 //only backup once since all targets will be the same
                 if (appinfo.DestinationPaths.First() == prodpath && !string.IsNullOrEmpty(System.Configuration.ConfigurationManager.AppSettings["BackupPath"]))
                 {
-                    Utilities.AppendAndSend(runlog, "Backup Version: " +appinfo.BackupVersion, Utilities.WrapIn.Pre);
+                    Utilities.AppendAndSend(runlog, "Backup Version: " + appinfo.BackupVersion, Utilities.WrapIn.Pre);
                     Utilities.AppendAndSend(runlog, "Destination Version: " + appinfo.DestinationVersion, Utilities.WrapIn.Pre);
                     Utilities.AppendAndSend(runlog, "Latest Version: " + appinfo.LatestVersion, Utilities.WrapIn.Pre);
                     //skip backup if current target version was already backed up and its not a resync
                     if ((appinfo.BackupVersion != appinfo.DestinationVersion) && (appinfo.LatestVersion != appinfo.DestinationVersion))
                     {
                         Utilities.AppendAndSend(runlog, "Backup application", Utilities.WrapIn.H4);
-                        Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + prodpath + "' '" + Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], appinfo.AppName) + "' /ETA /MIR /NP /W:2 /R:1 /FFT"),Utilities.WrapIn.Pre);
+                        Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("& robocopy '" + prodpath + "' '" + Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], appinfo.AppName) + "' /ETA /MIR /NP /W:2 /R:1 /FFT"), Utilities.WrapIn.Pre);
                     }
                     else
                     {
@@ -144,7 +173,7 @@ namespace DTMF.Controllers
                 Utilities.AppendAndSend(runlog, "Take web app offline", Utilities.WrapIn.H4);
                 Utilities.AppendAndSend(runlog, syncLogic.ExecuteCode("copy-item '" + binpath + @"\tools\app_offline.htm' '" + Path.Combine(prodpath, "app_offline.htm") + "'"), Utilities.WrapIn.Pre);
 
-               
+
                 if (appinfo.FastAppOffline)
                 {
                     //copy bin only while app is offline
@@ -236,7 +265,7 @@ namespace DTMF.Controllers
 
             if (!string.IsNullOrEmpty(appinfo.HipChatRoomID))
             {
-                HipChat.SendMessage(appinfo.HipChatRoomID, message, "green");  
+                HipChat.SendMessage(appinfo.HipChatRoomID, message, "green");
             }
 
             if (!string.IsNullOrEmpty(appinfo.SlackRoomID))
@@ -249,9 +278,9 @@ namespace DTMF.Controllers
 
             GitLogic.PushToReleaseBranchIfNeeded(
                 runlog,
-                appinfo.GitUrl, 
+                appinfo.GitUrl,
                 appinfo.ReleaseBranchName,
-                HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/git-repos/" + appinfo.RepositoryPathName),
+                Server.MapPath("~/App_Data/git-repos/" + appinfo.RepositoryPathName),
                 appinfo.LatestVersion);
 
             //log it
@@ -275,19 +304,35 @@ namespace DTMF.Controllers
                 return RedirectToAction("index");
             }
 
+            ShouldRollback = true;
+            return RedirectToAction("CurrentRollbackLog", new { appName });
+        }
+
+        [HttpGet]
+        public ActionResult CurrentRollbackLog(string appName)
+        {
+            ViewBag.RunRollback = false;
             ViewBag.AppName = appName;
-            return View();
+
+            if (ShouldRollback)
+            {
+                ViewBag.RunRollback = true;
+                return View("Rollback");
+            }
+
+            return RedirectToAction("index");
         }
 
         [CanDeploy]
+        [HttpPost]
         public void RunRollback(string appName)
         {
             var runlog = new StringBuilder();
             Utilities.SetRunningStatus(appName);
             //set some variables
             var appinfo = appLogic.GetAppExtendedByName(appName);
-            var binpath = HttpContext.ApplicationInstance.Server.MapPath("~/bin") + @"\";
-            var baselogpath = HttpContext.ApplicationInstance.Server.MapPath("~/App_Data/Logs/") + @"\";
+            var binpath = Server.MapPath("~/bin") + @"\";
+            var baselogpath = Server.MapPath("~/App_Data/Logs/") + @"\";
             var rollbackpath = Path.Combine(System.Configuration.ConfigurationManager.AppSettings["BackupPath"], appName);
             Utilities.AppendAndSend(runlog, "");
             Utilities.AppendAndSend(runlog, "Rollback started at " + DateTime.Now);
@@ -325,7 +370,7 @@ namespace DTMF.Controllers
             var message = Utilities.CurrentUser + " rolled back " + appName + " to version " + appinfo.BackupVersion + " at " + DateTime.Now;
             HipChat.SendMessage(message, "yellow");
             Slack.SendMessage("Rolled Back " + appName, message, "#ffcc00", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/Log/history?appName=" + appName, Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png");
-   
+
             //mark last ran time 
             appLogic.SetLastRunTime(appName);
 

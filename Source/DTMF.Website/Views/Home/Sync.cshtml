@@ -10,16 +10,18 @@
     @Scripts.Render("~/bundles/signalr")
     <script src="~/signalr/hubs" type="text/javascript"></script>
     <script>
-        $(function () {
+        $(function() {
             var notificationHub = $.connection.messageHub;
 
-            notificationHub.client.sendMessage = function (content) {
+            notificationHub.client.sendMessage = function(content) {
                 $("#monitors").append(content);
                 window.scrollTo(0, document.body.scrollHeight);
             };
 
-            $.connection.hub.start(function () {
-                $.get("@Url.Content("~/home/runsync")?AppName=@ViewBag.AppName");
+            $.connection.hub.start(function() {
+                if ('@ViewBag.RunSync' === 'True') {
+                    $.post("@Url.Action("RunSync", new {appName = ViewBag.AppName})");
+                }
             });
         });
     </script>

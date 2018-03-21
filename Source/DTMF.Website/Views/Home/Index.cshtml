@@ -39,12 +39,21 @@
             <td class="appbuttons">
                 @if (item.IsValid)
                 {
-                    <a href="@Url.Action(item.SyncInfo.Action,new { item.AppName })" class="sync btn + @item.SyncInfo.ClassName" title="@item.SyncInfo.Title"><i class='glyphicon glyphicon-retweet'></i> @item.SyncInfo.Text</a>
+                    <form method="post" action="@Url.Action(item.SyncInfo.Action, new { item.AppName })" title="@item.SyncInfo.Title" style="display: inline">
+                        <button type="submit" class="sync btn @item.SyncInfo.ClassName">
+                            <i class='glyphicon glyphicon-retweet'></i> 
+                            @item.SyncInfo.Text
+                        </button>
+                    </form>
                     <a href="@Url.Action("ViewConfig", "Configuration",new { item.AppName })" class="btn btn-default noconfirm" title="View configuration"><i class='glyphicon glyphicon-cog'></i></a>
                     <a href="@Url.Action("History", "Log",new { item.AppName })" class="btn btn-default noconfirm" title="View deployment log"><i class='glyphicon glyphicon-calendar'></i></a>
                     if (Utilities.CanDeploy)
                     {
-                        <a href="@Url.Action("Rollback",new { item.AppName })" class="rollback btn btn-default" style="display:none" title=""><i class='glyphicon glyphicon-backward'></i></a>
+                        <form method="post" class="js-rollback-form" action="@Url.Action("Rollback",new { item.AppName })" style="display: none">
+                            <button type="submit" class="rollback btn btn-default">
+                                <i class='glyphicon glyphicon-backward'></i>
+                            </button>
+                        </form>
                     }
                 }
                 else
@@ -62,7 +71,7 @@ Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.C
 @section scripts{
     <script>
         $(document).ready(function() {
-            $('.btn:not(.noconfirm)').click(function() {
+            $('form:not(.noconfirm)').submit(function () {
                 return confirm(this.title + '?');
             });
 
@@ -81,7 +90,7 @@ Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.C
                             parentrow.find('.sync').removeClass("btn-primary").addClass('btn-default');
                         }
                         if (adata[2] != adata[1] && adata[2] != 'invalid') {
-                            parentrow.find('.rollback').toggle().attr('title', 'Restore ' + appname + ' to version ' + adata[2]);
+                            parentrow.find('.js-rollback-form').css("display", "inline").attr('title', 'Restore ' + appname + ' to version ' + adata[2]);
                         }
                     });
 

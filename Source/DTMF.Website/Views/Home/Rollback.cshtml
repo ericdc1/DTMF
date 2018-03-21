@@ -19,7 +19,9 @@
             };
 
             $.connection.hub.start(function () {
-                $.get("@Url.Content("~/home/runrollback")?AppName=@ViewBag.AppName");
+                if ('@ViewBag.RunRollback' === 'True') {
+                    $.post("@Url.Action("RunRollback", new {appName = ViewBag.AppName})");
+                }
             });
         });
     </script>
