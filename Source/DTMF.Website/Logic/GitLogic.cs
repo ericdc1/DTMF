@@ -21,6 +21,7 @@ namespace DTMF.Logic
         public static void PushToReleaseBranchIfNeeded(
             StringBuilder runlog,
             string gitUrl,
+            string mainBranchName,
             string releaseBranchName, 
             string repositoryPath,
             string version)
@@ -30,6 +31,7 @@ namespace DTMF.Logic
             if (string.IsNullOrWhiteSpace(GitPassword)) return;
 
             if (string.IsNullOrWhiteSpace(gitUrl)) return;
+            if (string.IsNullOrWhiteSpace(mainBranchName)) return;
             if (string.IsNullOrWhiteSpace(releaseBranchName)) return;
             if (string.IsNullOrWhiteSpace(repositoryPath)) return;
 
@@ -44,7 +46,7 @@ namespace DTMF.Logic
                 CheckoutBranchIfNeeded(releaseBranchName, repositoryPath);
 
                 Utilities.AppendAndSend(runlog, "Merging master changes to branch..." + repositoryPath, Utilities.WrapIn.Pre);
-                PullChangesFromMaster(repositoryPath, version);
+                PullChangesFromMaster(repositoryPath, version, mainBranchName);
 
                 Utilities.AppendAndSend(runlog, "Pushing master changes to branch..." + repositoryPath, Utilities.WrapIn.Pre);
                 PushChanges(repositoryPath);
@@ -95,7 +97,7 @@ namespace DTMF.Logic
             }
         }
 
-        private static void PullChangesFromMaster(string path, string version)
+        private static void PullChangesFromMaster(string path, string version, string mainBranchName)
         {
             var fetchOptions = new FetchOptions
             {
@@ -113,7 +115,7 @@ namespace DTMF.Logic
 
                 var signature = new Signature(GitUsername, GitEmail, DateTimeOffset.Now);
 
-                repo.Merge(repo.Branches["origin/master"],
+                repo.Merge(repo.Branches[mainBranchName],
                     signature,
                     new MergeOptions
                     {

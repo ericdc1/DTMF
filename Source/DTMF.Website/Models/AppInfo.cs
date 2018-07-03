@@ -45,6 +45,7 @@ namespace DTMF.Models
         public string SlackRoomID { get; set; }
 
         public string GitUrl { get; set; }
+        public string MainBranchName { get; set; }
         public string ReleaseBranchName { get; set; }
         public string RepositoryPathName { get; set; }
 

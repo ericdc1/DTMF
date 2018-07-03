@@ -279,6 +279,7 @@ namespace DTMF.Controllers
             GitLogic.PushToReleaseBranchIfNeeded(
                 runlog,
                 appinfo.GitUrl,
+                appinfo.MainBranchName,
                 appinfo.ReleaseBranchName,
                 Server.MapPath("~/App_Data/git-repos/" + appinfo.RepositoryPathName),
                 appinfo.LatestVersion);
