@@ -31,7 +31,7 @@ namespace DTMF.Logic
         public static void SaveLog(string baselogpath, string appName, string logtext)
         {
             var logfolder = Path.Combine(baselogpath, appName);
-            var logfile = Path.Combine(logfolder, DateTime.Now.ToString("yyyy-MM-dd hh_mm") + ".htm");
+            var logfile = Path.Combine(logfolder, DateTime.Now.ToString("yyyy-MM-dd HH_mm") + ".htm");
             Directory.CreateDirectory(logfolder);
             File.WriteAllText(logfile, logtext);
         }
