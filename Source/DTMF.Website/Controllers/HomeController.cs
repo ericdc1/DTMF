@@ -96,13 +96,13 @@ namespace DTMF.Controllers
 
         [CanDeploy]
         [HttpPost]
-        public void RunSync(string appName)
+        public async Task RunSync(string appName)
         {
             var runlog = new StringBuilder();
             var appinfo = appLogic.GetAppExtendedByName(appName);
             Utilities.SetRunningStatus(appName);
             //Check for running builds
-            if (TeamCity.IsRunning(runlog, appName, appinfo.BuildConfigurationID))
+            if (await TeamCity.IsRunningAsync(runlog, appName, appinfo.BuildConfigurationID))
             {
                 Utilities.SetRunningStatus(string.Empty);
                 return;
