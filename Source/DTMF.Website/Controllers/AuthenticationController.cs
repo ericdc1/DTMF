@@ -16,7 +16,7 @@ namespace DTMF.Controllers
 
         public ActionResult Login()
         {
-            return View();
+            return View(new LoginModel());
         }
 
         [HttpPost]

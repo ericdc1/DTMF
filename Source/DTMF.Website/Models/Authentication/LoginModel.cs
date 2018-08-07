@@ -16,17 +16,11 @@ namespace DTMF.Models.Authentication
         public string Password { get; set; }
 
         [DisplayName("Remember Me")]
-        public bool RememberMe { get; set; }
+        public bool RememberMe { get; set; } = true;
 
-        public bool HasValidUsernameAndPassword
-        {
-            get
-            {
-                return ValidateLogin(Username, Password);
-            }
-        }
+        public bool HasValidUsernameAndPassword => ValidateLogin(Username, Password);
 
-        public bool ValidateLogin(string userName, string pwd)
+        private static bool ValidateLogin(string userName, string pwd)
         {
             //prevent running twice
             if (HttpContext.Current.Items.Contains("ValidateLoginResult"))
@@ -56,7 +50,5 @@ namespace DTMF.Models.Authentication
                 return false;
             }
         }
-
-
     }
 }
