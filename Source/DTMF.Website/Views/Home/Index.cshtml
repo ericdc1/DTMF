@@ -39,9 +39,9 @@
             <td class="appbuttons">
                 @if (item.IsValid)
                 {
-                    <form method="post" action="@Url.Action(item.SyncInfo.Action, new { item.AppName })" title="@item.SyncInfo.Title" style="display: inline">
-                        <button type="submit" class="sync btn @item.SyncInfo.ClassName">
-                            <i class='glyphicon glyphicon-retweet'></i> 
+                    <form id="@item.AppName.Replace(".","")-form" method="post" action="@Url.Action(item.SyncInfo.Action, new { item.AppName })" title="@item.SyncInfo.Title" style="display: inline">
+                        <button disabled type="submit" class="sync btn @item.SyncInfo.ClassName">
+                            <i class='glyphicon glyphicon-retweet'></i>
                             @item.SyncInfo.Text
                         </button>
                     </form>
@@ -68,18 +68,29 @@
 </table>
 Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.Current.Timestamp).TotalSeconds, 3)
 
+@section footer {
+    <div class="container" style="padding: .5em">
+        <p style="color: white">
+            Add to Homescreen?
+            <button id="installYay" class="btn-success btn" style="margin-right: 1em">Add</button>
+            <button id="installNay" class="btn-danger btn">Nope!</button>
+        </p>
+
+    </div>
+}
+
 @section scripts{
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             $('form:not(.noconfirm)').submit(function () {
                 return confirm(this.title + '?');
             });
 
-            $('.apptitle').each(function() {
-                $(this).find('a').each(function() {
+            $('.apptitle').each(function () {
+                $(this).find('a').each(function () {
                     var parentrow = $(this).closest('tr');
                     var appname = this.innerHTML;
-                    $.get("/home/getversioninfo/?appname=" + appname, function(data) {
+                    $.get("/home/getversioninfo/?appname=" + appname, function (data) {
                         var adata = data.split("|");
                         parentrow.find('.latest').html(adata[0]).addClass("label-default");
                         parentrow.find('.destination').html(adata[1]).addClass("label-success");
@@ -92,14 +103,39 @@ Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.C
                         if (adata[2] != adata[1] && adata[2] != 'invalid') {
                             parentrow.find('.js-rollback-form').css("display", "inline").attr('title', 'Restore ' + appname + ' to version ' + adata[2]);
                         }
+
+                        debugger;
+                        $("#" + appname.replace(".", "") + "-form button").prop('disabled', false);
                     });
 
                 });
             });
         });
+
+        var deferredInstall;
+
+        window.addEventListener('beforeinstallprompt', (e) => {
+            console.log("deferrer");
+            // Prevent Chrome 67 and earlier from automatically showing the prompt
+            e.preventDefault();
+            deferredInstall = e;
+            $("#installPrompter").show();
+        });
+
+        $("#installYay").click(function () {
+            $("#installPrompter").hide();
+            deferredInstall.prompt();
+        });
+
+        $("#installNay").click(function () {
+            $("#installPrompter").hide();
+        });
+
+
     </script>
 }
-@if (Utilities.CanDeploy) {
-<br><br>
-<a href="https://deploy.hsc.wvu.edu/Log/History?AppName=RoboLogs">Daily RoboLogs</a>
+@if (Utilities.CanDeploy)
+{
+    <br><br>
+    <a href="https://deploy.hsc.wvu.edu/Log/History?AppName=RoboLogs">Daily RoboLogs</a>
 }

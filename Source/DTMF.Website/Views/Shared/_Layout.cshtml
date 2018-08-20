@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#101010">
     <title>@ViewBag.Title - Deployments</title>
     @Styles.Render("~/Content/css")
     <link href='https://fonts.googleapis.com/css?family=Gloria+Hallelujah|Exo+2:600' rel='stylesheet' type='text/css'>
@@ -41,8 +42,27 @@
         @RenderBody()
     </div>
 
+
+    <footer id="installPrompter" class="footer navbar-fixed-bottom" style="background-color: #101010; display: none">
+        @RenderSection("footer", required: false)
+    </footer>
+
     @Scripts.Render("~/bundles/jquery")
     @Scripts.Render("~/bundles/bootstrap")
     @RenderSection("scripts", required: false)
+    <script>
+        window.addEventListener('offline', function (e) { console.log('offline'); });
+        window.addEventListener('online', function (e) { console.log('online'); });
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js?v2', {
+                scope: './'
+            }).then(function (sw) {
+                console.log("registration worked!");
+            }).catch(function () {
+                console.warn("registration failed!");
+            });
+        }
+    </script>
 </body>
 </html>

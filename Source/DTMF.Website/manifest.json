@@ -1,12 +1,16 @@
 {
-    "short_name": "DTMF",
-    "name": "HSC ITS Deployment",
-    "icons": [{
-        "src": "/content/dtmf_icon.png",
-        "sizes": "512x512",
-        "type": "image/png"
-    }],
-    "start_url": "/",
-    "display": "standalone",
-    "orientation": "portrait"
+  "short_name": "DTMF",
+  "name": "HSC ITS Deployment",
+  "icons": [
+    {
+      "src": "/content/dtmf_icon.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ],
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#101010",
+  "theme_color": "#101010"
 }
