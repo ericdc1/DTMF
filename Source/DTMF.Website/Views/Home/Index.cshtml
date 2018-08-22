@@ -103,8 +103,7 @@ Total execution time: @Math.Round(DateTime.Now.Subtract(System.Web.HttpContext.C
                         if (adata[2] != adata[1] && adata[2] != 'invalid') {
                             parentrow.find('.js-rollback-form').css("display", "inline").attr('title', 'Restore ' + appname + ' to version ' + adata[2]);
                         }
-
-                        debugger;
+                        
                         $("#" + appname.replace(".", "") + "-form button").prop('disabled', false);
                     });
 

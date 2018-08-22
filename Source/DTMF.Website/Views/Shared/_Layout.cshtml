@@ -55,9 +55,10 @@
         window.addEventListener('online', function (e) { console.log('online'); });
 
         if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('/sw.js?v2', {
+            navigator.serviceWorker.register('/sw.js?v16', {
                 scope: './'
             }).then(function (sw) {
+                sw.update();
                 console.log("registration worked!");
             }).catch(function () {
                 console.warn("registration failed!");
