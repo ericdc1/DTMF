@@ -56,11 +56,23 @@ namespace DTMF.Controllers
         public ActionResult RequestSync(string appName)
         {
             var message = Utilities.CurrentUser + " requested deployment of " + appName + " at " + DateTime.Now;
-            HipChat.SendMessage(appName, message, "red");
-            Slack.SendMessage("Requested Sync Of " + appName, message, "#ff0000", Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/'), Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') + "/content/dtmf_icon.png");
 
-            Utilities.SendEmailNotification(message);
             appLogic.SetPendingRequest(appName, message);
+
+            try
+            {
+                HipChat.SendMessage(appName, message, "red");
+                Slack.SendMessage("Requested Sync Of " + appName, message, "#ff0000",
+                    Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/'),
+                    Request.Url.Scheme + "://" + Request.Url.Authority + Request.ApplicationPath.TrimEnd('/') +
+                    "/content/dtmf_icon.png");
+                Utilities.SendEmailNotification(message);
+            }
+            catch
+            {
+                //¯\_(ツ)_/¯
+            }
+
             return RedirectToAction("index");
         }
 
