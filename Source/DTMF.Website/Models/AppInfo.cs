@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 
 namespace DTMF.Models
 {
@@ -49,5 +50,11 @@ namespace DTMF.Models
         public string ReleaseBranchName { get; set; }
         public string RepositoryPathName { get; set; }
 
+
+        [DisplayName("Web Server")]
+        public string WebServer => DestinationPaths?.FirstOrDefault();
+
+        [DisplayName("Database Server")]
+        public string DatabaseServer => BuildOutputDatabases?.FirstOrDefault()?.ServerName;
     }
 }

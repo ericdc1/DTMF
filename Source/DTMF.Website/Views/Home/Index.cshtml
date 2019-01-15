@@ -19,6 +19,12 @@
         <th>
             @Html.DisplayNameFor(model => model.DestinationVersion)
         </th>
+        <th>
+            @Html.DisplayNameFor(model => model.WebServer)
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.DatabaseServer)
+        </th>
         <th></th>
     </tr>
 
@@ -36,6 +42,8 @@
             <td>
                 <span class="destination label"><img src="../../Content/moving.gif" alt="" height="10" /></span>
             </td>
+            <td>@item.WebServer</td>
+            <td>@item.DatabaseServer</td>
             <td class="appbuttons">
                 @if (item.IsValid)
                 {
